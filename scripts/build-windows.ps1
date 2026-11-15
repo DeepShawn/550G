@@ -1,4 +1,4 @@
-# Windows 发布构建：干净虚拟环境 → 测试 → 素材校验 → PyInstaller onedir → 冻结包冒烟自检 → ZIP + SHA-256。
+﻿# Windows 发布构建：干净虚拟环境 → 测试 → 素材校验 → PyInstaller onedir → 冻结包冒烟自检 → ZIP + SHA-256。
 # 用法（仓库根目录）：powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1 [-Release]
 #   -Release  正式发布：素材仍是占位（pets.json placeholder=true）时失败。
 param([switch]$Release, [string]$Python = "py -3.11")

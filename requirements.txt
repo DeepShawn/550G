@@ -1,4 +1,4 @@
-# 运行依赖（锁定版本）。只用 PySide6-Essentials（QtCore/Gui/Widgets/Network），不需要 Addons。
-# 状态：候选锁定。Linux offscreen 测试通过；Windows 构建由 CI/本机脚本验证后在 CHANGELOG 记录。
+# Runtime dependencies (pinned). PySide6-Essentials only: QtCore/Gui/Widgets/Network.
+# Keep this file ASCII-only: pip on Windows decodes it with the ANSI code page.
 PySide6-Essentials==6.8.3
 shiboken6==6.8.3

@@ -1,4 +1,4 @@
-# 开发启动：在仓库根目录建 .venv（Python 3.11 x64），只在依赖缺失时安装，然后启动桌宠。
+﻿# 开发启动：在仓库根目录建 .venv（Python 3.11 x64），只在依赖缺失时安装，然后启动桌宠。
 # 用法：powershell -ExecutionPolicy Bypass -File scripts\dev-start.ps1 [-- 额外参数]
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $PSScriptRoot
