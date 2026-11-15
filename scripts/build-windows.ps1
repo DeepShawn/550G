@@ -3,6 +3,8 @@
 #   -Release  正式发布：素材仍是占位（pets.json placeholder=true）时失败。
 param([switch]$Release, [string]$Python = "py -3.11")
 $ErrorActionPreference = "Stop"
+$env:PYTHONUTF8 = "1"
+$env:PYTHONIOENCODING = "utf-8"
 $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
 

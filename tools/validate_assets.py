@@ -12,6 +12,12 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
+for _s in (sys.stdout, sys.stderr):  # Windows 控制台可能是 cp1252/GBK
+    try:
+        _s.reconfigure(errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 from app.assets import ALL_FRAMES, REQUIRED_FRAMES, load_manifest  # noqa: E402

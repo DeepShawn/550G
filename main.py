@@ -178,4 +178,9 @@ if __name__ == "__main__":
         sys.stdout = open(os.devnull, "w", encoding="utf-8")  # noqa: SIM115
     if sys.stderr is None:
         sys.stderr = open(os.devnull, "w", encoding="utf-8")  # noqa: SIM115
+    for _s in (sys.stdout, sys.stderr):  # 控制台代码页可能无法编码中文
+        try:
+            _s.reconfigure(errors="replace")
+        except (AttributeError, ValueError):
+            pass
     sys.exit(main())
