@@ -1,0 +1,15 @@
+第三方组件说明（发布包中包含）
+
+1. Qt 6 / PySide6-Essentials / shiboken6 6.8.3
+   版权 The Qt Company Ltd. 及其他贡献者
+   许可：GNU LGPL v3（https://www.gnu.org/licenses/lgpl-3.0.html）
+   源码：https://code.qt.io/ 与 https://download.qt.io/official_releases/QtForPython/
+   本程序以动态链接方式使用 Qt 库（onedir 包中的独立 DLL / .pyd），用户可替换为兼容版本。
+
+2. Python 3.11 运行时
+   许可：PSF License Agreement（https://docs.python.org/3/license.html）
+
+3. PyInstaller 引导程序（bootloader）
+   许可：GPL v2 附带特殊例外，允许分发由其生成的程序（https://pyinstaller.org/en/stable/license.html）
+
+角色素材：assets/pets/* 与 assets/tray.* 为本项目程序生成的原创占位图形，见 docs/素材来源.md。

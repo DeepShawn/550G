@@ -1,0 +1,5 @@
+-r requirements.txt
+pytest==9.2.0
+pytest-qt==4.5.0
+# 仅素材工具需要（生成占位帧/ICO、素材校验）；QtSvg 已包含在 PySide6-Essentials
+pillow==12.3.0

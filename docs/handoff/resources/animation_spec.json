@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "status": "proposed_not_implemented",
+  "clock": "monotonic_seconds",
+  "per_pet_independent": true,
+  "render_fps_target": 25,
+  "idle_float_logical_px": 2.5,
+  "blink_interval_seconds": [
+    3,
+    7
+  ],
+  "blink_sequence": [
+    {
+      "frame": "blink_half",
+      "duration_ms": 40,
+      "optional": true
+    },
+    {
+      "frame": "blink_closed",
+      "duration_ms": 100
+    },
+    {
+      "frame": "blink_half",
+      "duration_ms": 40,
+      "optional": true
+    }
+  ],
+  "cute_seconds": 2,
+  "bubble_seconds": 4,
+  "sleep_after_inactivity_seconds": 180,
+  "states": [
+    "idle",
+    "blink",
+    "cute",
+    "sleep"
+  ],
+  "rules": [
+    "left_click_wakes_sleep_then_cute_and_dialogue",
+    "drag_does_not_trigger_dialogue",
+    "blink_only_from_idle",
+    "manual_action_overrides_automatic_action",
+    "hidden_pauses_updates_and_show_resets_time_baseline"
+  ],
+  "missing_frame_policy": {
+    "idle": "show_error_and_log",
+    "blink_half": "skip",
+    "other": "fallback_idle_and_log_but_release_validation_must_fail"
+  }
+}

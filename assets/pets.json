@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "pets": [
+    {
+      "id": "550g",
+      "name": "550G",
+      "subtitle": "灰白发 · 蓝色主题",
+      "theme": "#648ED8",
+      "frames_dir": "pets/550g",
+      "canvas_px": [768, 896],
+      "anchor_px": [384, 848],
+      "placeholder": true
+    },
+    {
+      "id": "gpt_senpai",
+      "name": "前辈GPT",
+      "subtitle": "浅白绿渐变长发 · 白裙",
+      "theme": "#81AF88",
+      "frames_dir": "pets/gpt_senpai",
+      "canvas_px": [768, 896],
+      "anchor_px": [384, 848],
+      "placeholder": true
+    }
+  ],
+  "animation": {
+    "clock": "monotonic_seconds",
+    "render_fps_target": 25,
+    "idle_float_logical_px": 2.5,
+    "blink_interval_seconds": [3, 7],
+    "blink_sequence": [
+      {"frame": "blink_half", "duration_ms": 40, "optional": true},
+      {"frame": "blink_closed", "duration_ms": 100},
+      {"frame": "blink_half", "duration_ms": 40, "optional": true}
+    ],
+    "cute_seconds": 2,
+    "bubble_seconds": 4,
+    "sleep_after_inactivity_seconds": 180
+  }
+}

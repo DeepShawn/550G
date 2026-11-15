@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "purpose": "handoff_inventory_not_runtime_config",
+  "existing": [
+    {
+      "path": "source_original/assets/550G.svg",
+      "status": "included_original_placeholder",
+      "purpose": "550G 静态原型"
+    },
+    {
+      "path": "source_original/assets/前辈GPT.svg",
+      "status": "included_original_placeholder",
+      "purpose": "前辈GPT 静态原型"
+    },
+    {
+      "path": "source_original/assets/tray.svg",
+      "status": "included_original_placeholder",
+      "purpose": "原型托盘图标"
+    }
+  ],
+  "planned": [
+    {
+      "target_path": "assets/pets/550g/idle.png",
+      "status": "not_created",
+      "required": true,
+      "size_px": [
+        768,
+        896
+      ],
+      "anchor_px": [
+        384,
+        848
+      ],
+      "format": "RGBA PNG"
+    },
+    {
+      "target_path": "assets/pets/550g/blink_closed.png",
+      "status": "not_created",
+      "required": true,
+      "size_px": [
+        768,
+        896
+      ],
+      "anchor_px": [
+        384,
+        848
+      ],
+      "format": "RGBA PNG"
+    },
+    {
+      "target_path": "assets/pets/550g/cute.png",
+      "status": "not_created",
+      "required": true,
+      "size_px": [
+        768,
+        896
+      ],
+      "anchor_px": [
+        384,
+        848
+      ],
+      "format": "RGBA PNG"
+    },
+    {
+      "target_path": "assets/pets/550g/sleep.png",
+      "status": "not_created",
+      "required": true,
+      "size_px": [
+        768,
+        896
+      ],
+      "anchor_px": [
+        384,
+        848
+      ],
+      "format": "RGBA PNG"
+    },
+    {
+      "target_path": "assets/pets/550g/blink_half.png",
+      "status": "not_created",
+      "required": false,
+      "size_px": [
+        768,
+        896
+      ],
+      "anchor_px": [
+        384,
+        848
+      ],
+      "format": "RGBA PNG"
+    },
+    {
+      "target_path": "assets/pets/gpt_senpai/idle.png",
+      "status": "not_created",
+      "required": true,
+      "size_px": [
+        768,
+        896
+      ],
+      "anchor_px": [
+        384,
+        848
+      ],
+      "format": "RGBA PNG"
+    },
+    {
+      "target_path": "assets/pets/gpt_senpai/blink_closed.png",
+      "status": "not_created",
+      "required": true,
+      "size_px": [
+        768,
+        896
+      ],
+      "anchor_px": [
+        384,
+        848
+      ],
+      "format": "RGBA PNG"
+    },
+    {
+      "target_path": "assets/pets/gpt_senpai/cute.png",
+      "status": "not_created",
+      "required": true,
+      "size_px": [
+        768,
+        896
+      ],
+      "anchor_px": [
+        384,
+        848
+      ],
+      "format": "RGBA PNG"
+    },
+    {
+      "target_path": "assets/pets/gpt_senpai/sleep.png",
+      "status": "not_created",
+      "required": true,
+      "size_px": [
+        768,
+        896
+      ],
+      "anchor_px": [
+        384,
+        848
+      ],
+      "format": "RGBA PNG"
+    },
+    {
+      "target_path": "assets/pets/gpt_senpai/blink_half.png",
+      "status": "not_created",
+      "required": false,
+      "size_px": [
+        768,
+        896
+      ],
+      "anchor_px": [
+        384,
+        848
+      ],
+      "format": "RGBA PNG"
+    },
+    {
+      "target_path": "assets/tray.ico",
+      "status": "not_created",
+      "required": true,
+      "sizes_px": [
+        16,
+        20,
+        24,
+        32,
+        48,
+        64,
+        128,
+        256
+      ]
+    },
+    {
+      "target_path": "references/user_concept.png",
+      "status": "chat_only_not_in_bundle",
+      "required": false
+    }
+  ]
+}
