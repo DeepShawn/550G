@@ -39,7 +39,7 @@ def main() -> int:
     for spec in m.pets:
         row = []
         ref = None
-        for f in ALL_FRAMES:
+        for f in ALL_FRAMES + tuple(e for e, _ in spec.extras):
             p = spec.frame_path(f)
             if not p.is_file():
                 (errors if f in REQUIRED_FRAMES else warnings).append(f"{spec.id}/{f}.png 缺失")
@@ -63,8 +63,12 @@ def main() -> int:
             if ref is None:
                 ref = bb
             else:
-                # 表情只改五官：轮廓包围盒的底边与左右应几乎不变（脚底锚点不跳）
-                if abs(bb[3] - ref[3]) > 2 or abs(bb[0] - ref[0]) > 4 or abs(bb[2] - ref[2]) > 4:
+                # 所有帧底边（脚底锚点）一致，切换时人不会上下跳
+                if abs(bb[3] - ref[3]) > 2:
+                    errors.append(f"{spec.id}/{f}.png 底边与 idle 不一致 {bb} vs {ref}")
+                # 眨眼帧只改眼睛：整体轮廓必须与 idle 相同
+                if f.startswith("blink") and (abs(bb[0] - ref[0]) > 2 or abs(bb[2] - ref[2]) > 2
+                                              or abs(bb[1] - ref[1]) > 2):
                     errors.append(f"{spec.id}/{f}.png 与 idle 轮廓不对齐 {bb} vs {ref}")
             row.append((f, im))
         sheet_rows.append((spec, row))

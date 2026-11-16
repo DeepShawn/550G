@@ -21,6 +21,7 @@ class FrameSet:
         self.fallbacks: Dict[str, str] = {}  # 缺失帧 -> 实际使用的帧
         self.problems: List[str] = []
         self._pix_cache: Dict[Tuple[str, int, int, float], QPixmap] = {}
+        self._tops: Dict[str, float] = {}
         self._load()
 
     def _load(self) -> None:
@@ -30,14 +31,14 @@ class FrameSet:
             raise AssetError(f"{self.spec.name} 的必需帧 idle 缺失或无法读取：{idle_path}")
         idle = idle.convertToFormat(QImage.Format_ARGB32_Premultiplied)
         self.images["idle"] = idle
-        for name in ALL_FRAMES:
+        for name in ALL_FRAMES + tuple(f for f, _ in self.spec.extras):
             if name == "idle":
                 continue
             path = self.spec.frame_path(name)
             img = QImage(str(path))
             if img.isNull():
                 self.fallbacks[name] = "idle"
-                if name in OPTIONAL_FRAMES:
+                if name in OPTIONAL_FRAMES or name not in ALL_FRAMES:
                     log.info("%s 可选帧 %s 不存在，眨眼时跳过", self.spec.name, name)
                 else:
                     msg = f"{self.spec.name} 必需帧 {name} 缺失（{path}），回退为 idle"
@@ -51,6 +52,23 @@ class FrameSet:
                 log.warning(msg)
                 img = img.scaled(idle.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
             self.images[name] = img.convertToFormat(QImage.Format_ARGB32_Premultiplied)
+
+    def content_top(self, frame: str) -> float:
+        """该帧不透明内容顶边占画布高度的比例（用于把气泡贴近头顶）。"""
+        name = self.resolve(frame)
+        top = self._tops.get(name)
+        if top is None:
+            img = self.images[name]
+            a = img.convertToFormat(QImage.Format_Alpha8)
+            bpl, h, w = a.bytesPerLine(), a.height(), a.width()
+            data = bytes(a.constBits())  # type: ignore[arg-type]
+            top = 0
+            for y in range(h):
+                if max(data[y * bpl: y * bpl + w]) > 32:
+                    top = y
+                    break
+            self._tops[name] = top = top / h
+        return top
 
     @property
     def source_size(self) -> QSize:

@@ -1,5 +1,15 @@
 # 变更记录
 
+## v0.3.0-dev-preview（2026-11-16）
+
+### 角色形象改为与概念图一致
+- 角色帧直接从用户概念图的表情贴纸中抠出（Real-ESRGAN anime x4 放大），替换 v0.2.0 的程序绘制占位图。新增 `tools/extract_reference_sprites.py`、`tools/make_blink_frames.py`；删除占位 SVG。
+- 眨眼帧由 idle 派生（只重画眼睛）。
+- 新增概念图中的额外表情：550G 惊讶/生气，前辈GPT 开心/疑惑。`emote` 状态，右键“表情 / 动作”可选，单击时也有 25% 概率出现，并配对应对白。
+- 气泡贴近当前帧的头顶（睡姿更低），睡眠 Z 跟随睡姿头部。
+- 素材校验：所有帧底边一致；眨眼帧必须与 idle 轮廓一致；校验额外表情。`pets.json` 中 `placeholder` 改为 `false`。
+- 测试增至 60 项。
+
 ## v0.2.0-dev-preview（2026-11-15）
 
 在原型 v1（`source_original/`，未修改）基础上重构为可测试的模块结构。**开发预览版**：素材为工程占位、Windows 实机验收未完成。

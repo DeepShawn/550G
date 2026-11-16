@@ -19,6 +19,7 @@ IDLE = "idle"
 BLINK = "blink"
 CUTE = "cute"
 SLEEP = "sleep"
+EMOTE = "emote"  # 额外表情（惊讶/生气/开心/疑惑…），帧名由 emote_frame 指定，定时回到 idle
 STATES = (IDLE, BLINK, CUTE, SLEEP)
 
 # 帧名称与素材文件名一致
@@ -98,6 +99,7 @@ class PetBrain:
     next_blink_at: float = 0.0
     last_interaction: float = 0.0
     manual_sleep: bool = False
+    emote_frame: str = ""
 
     bubble_text: str = ""
     bubble_until: Optional[float] = None
@@ -154,7 +156,7 @@ class PetBrain:
 
         # 循环处理，以便一次较大的时间跳跃也能落到正确状态（不会积压 timer）
         for _ in range(8):
-            if self.state in (BLINK, CUTE) and self.state_until is not None and now >= self.state_until:
+            if self.state in (BLINK, CUTE, EMOTE) and self.state_until is not None and now >= self.state_until:
                 self._set_state(IDLE, self.state_until, None, "timeout")
                 continue
             if self.state == IDLE:
@@ -187,6 +189,8 @@ class PetBrain:
             return FRAME_CUTE
         if self.state == SLEEP:
             return FRAME_SLEEP
+        if self.state == EMOTE:
+            return self.emote_frame or FRAME_IDLE
         return FRAME_IDLE
 
     # ---- 用户事件 ----
@@ -218,6 +222,18 @@ class PetBrain:
         elif state == SLEEP:
             self._set_state(SLEEP, now, None, "manual")
             self.manual_sleep = True
+
+    def emote(self, frame: str, now: float, seconds: Optional[float] = None) -> str:
+        """显示一个额外表情帧一段时间（默认 cute_seconds 的 1.5 倍）后回 idle。
+
+        与 click() 一样会唤醒睡眠；返回对白类别（睡眠中为 wake，否则为表情名）。"""
+        self.update(now)
+        event = EVENT_WAKE if self.state == SLEEP else frame
+        self.last_interaction = now
+        self.emote_frame = frame
+        dur = seconds if seconds is not None else self.timing.cute_seconds * 1.5
+        self._set_state(EMOTE, now, now + dur, "emote")
+        return event
 
     def say(self, text: str, now: float, seconds: Optional[float] = None) -> None:
         self.bubble_text = text

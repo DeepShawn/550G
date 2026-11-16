@@ -10,6 +10,8 @@ from typing import Dict, List, Optional
 log = logging.getLogger(__name__)
 
 CATEGORIES = ("greeting", "click", "cute", "sleep", "wake")
+# 额外表情的对白类别（缺失时回退 click）
+EXTRA_CATEGORIES = ("surprised", "angry", "happy", "confused")
 
 
 class DialoguePool:
@@ -39,7 +41,8 @@ def load_dialogues(path: Path) -> Dict[str, DialoguePool]:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
         pets = data["pets"]
-        return {pid: DialoguePool({c: list(v.get(c, [])) for c in CATEGORIES}) for pid, v in pets.items()}
+        return {pid: DialoguePool({c: list(v.get(c, [])) for c in CATEGORIES + EXTRA_CATEGORIES})
+                for pid, v in pets.items()}
     except (OSError, ValueError, KeyError, TypeError, AttributeError) as e:
         log.error("对白文件读取失败：%s (%s)", path, e)
         return {}

@@ -161,13 +161,25 @@ class PetWindow(QWidget):
     # ------------------------------------------------------------------ 对白/动作
     def trigger_click(self) -> None:
         now = monotonic()
-        event = self.brain.click(now)
-        if event == EVENT_WAKE:
-            text = self.dialogues.pick("wake")
+        extras = [f for f, _ in self.spec.extras]
+        if self.brain.state != SLEEP and extras and random.random() < 0.25:
+            # 偶尔用额外表情回应单击，让反应更丰富
+            frame = random.choice(extras)
+            self.brain.emote(frame, now)
+            text = self.dialogues.pick(frame)
         else:
-            text = self.dialogues.pick("cute" if random.random() < 0.25 else "click")
+            event = self.brain.click(now)
+            if event == EVENT_WAKE:
+                text = self.dialogues.pick("wake")
+            else:
+                text = self.dialogues.pick("cute" if random.random() < 0.25 else "click")
         self.say(text)
         self.clicked.emit()
+
+    def play_emote(self, frame: str) -> None:
+        """右键菜单触发额外表情。"""
+        event = self.brain.emote(frame, monotonic())
+        self.say(self.dialogues.pick("wake" if event == EVENT_WAKE else frame))
 
     def say(self, text: str, seconds: Optional[float] = None) -> None:
         self.brain.say(text, monotonic(), seconds)
@@ -254,15 +266,19 @@ class PetWindow(QWidget):
         h = fmn.lineSpacing() + lines_h + 2 * pad_y
         cx = self.char_origin.x() + self.char_w // 2
         x = min(max(4, cx - w // 2), self.win_w - 4 - w)
-        bottom = self.bubble_h - 10 + self._bubble_shift
+        # 气泡底边贴近当前帧头顶（帧顶部有透明留白，睡姿更低）
+        head_y = self.char_origin.y() + round(self.frames.content_top(self.brain.frame()) * self.char_h)
+        bottom = max(self.bubble_h - 10, head_y - round(6 * self.scale)) + self._bubble_shift
         top = max(2, bottom - h)  # 文字太多时向下压到头顶，不被窗口裁掉
         return QRect(x, top, w, h)
 
     def z_rect(self) -> QRect:
         s = self.scale
-        # 头部右侧偏上，尽量不与气泡重叠
-        return QRect(self.char_origin.x() + round(self.char_w * 0.68), self.bubble_h - round(16 * s),
-                     round(78 * s), round(78 * s))
+        # 睡姿头顶右上方
+        head_y = self.char_origin.y() + round(self.frames.content_top("sleep") * self.char_h)
+        size = round(78 * s)
+        return QRect(self.char_origin.x() + round(self.char_w * 0.70), max(0, head_y - size + round(20 * s)),
+                     size, size)
 
     def _update_bubble_shift(self) -> None:
         """气泡会超出屏幕顶部时，把它下移到角色头部上方的可见范围内。"""

@@ -1,6 +1,6 @@
 # 550G × 前辈GPT · Windows 双人桌宠
 
-v0.2.0-dev-preview —— 开发预览版（占位素材；Windows 实机验收未完成，见 [docs/已知限制与测试记录.md](docs/已知限制与测试记录.md)）。
+v0.3.0-dev-preview —— 开发预览版（角色取自用户概念图；Windows 实机验收未完成，见 [docs/已知限制与测试记录.md](docs/已知限制与测试记录.md)）。
 
 两位坐姿 Q 版角色常驻桌面：透明、置顶、各自独立拖动；单击对白并卖萌；随机眨眼、空闲睡觉、单击唤醒；右键与托盘可隐藏/显示/恢复/退出。PySide6 原生窗口，离线运行。
 
@@ -59,6 +59,14 @@ powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1 -Release # �
 
 产物：`release/550G_GPT_DesktopPets_<版本>_win_x64.zip`、源码 ZIP、`SHA256SUMS.txt`。推送后 GitHub Actions `windows-build` 也会构建并上传同样的 ZIP。构建自检通过不等于实机验收，发布前按 `docs/handoff/05_Windows验收清单.md` 测试。
 
-## 替换正式素材
+## 角色素材
 
-见 [docs/素材来源.md](docs/素材来源.md)：同名 PNG（768×896 RGBA，脚底锚点 384,848）放入 `assets/pets/<id>/`，通过校验后把 `pets.json` 的 `placeholder` 改为 `false`。
+角色帧直接从概念图 `docs/handoff/resources/user_concept.png` 的表情贴纸中抠出（形象与概念图一致），见 [docs/素材来源.md](docs/素材来源.md)。重新生成：
+
+```bash
+python tools/extract_reference_sprites.py --esrgan RealESRGAN_x4plus_anime_6B.pth   # 需要 torch、scipy
+python tools/make_blink_frames.py --dir assets/pets
+python tools/validate_assets.py --release --sheet preview.png
+```
+
+有更高清的原图时，同名 PNG（768×896 RGBA，脚底锚点 384,848）直接替换 `assets/pets/<id>/` 即可。

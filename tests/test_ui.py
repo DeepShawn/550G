@@ -144,3 +144,11 @@ def test_bubble_fits_window_with_long_text(ctl):
     a.say("这是一句非常非常长的中文对白，用来检查气泡在窗口里会不会被截断或者越界显示。" * 2)
     r = a.bubble_rect()
     assert r.left() >= 0 and r.top() >= 0 and r.right() < a.width()
+
+
+def test_menu_emote(ctl):
+    from app.state_machine import EMOTE
+    a, b = ctl.pets
+    a.play_emote("surprised")
+    assert a.brain.state == EMOTE and a.brain.frame() == "surprised" and a.brain.bubble_text
+    assert b.brain.state != EMOTE

@@ -256,6 +256,10 @@ class AppController(QObject):
         sm = menu.addMenu("表情 / 动作")
         for st, label in STATE_LABELS:
             sm.addAction(label, lambda st=st, p=pet: p.set_state(st))
+        if pet.spec.extras:
+            sm.addSeparator()
+            for frame, label in pet.spec.extras:
+                sm.addAction(label, lambda f=frame, p=pet: p.play_emote(f))
         zm = menu.addMenu("大小")
         group = QActionGroup(zm)
         group.setExclusive(True)

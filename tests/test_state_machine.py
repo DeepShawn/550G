@@ -2,7 +2,7 @@ import random
 
 import pytest
 
-from app.state_machine import (BLINK, CUTE, EVENT_CLICK, EVENT_WAKE, IDLE, SLEEP, PetBrain,
+from app.state_machine import (BLINK, CUTE, EMOTE, EVENT_CLICK, EVENT_WAKE, IDLE, SLEEP, PetBrain,
                                TimingConfig)
 
 
@@ -158,3 +158,22 @@ def test_timing_from_dict_validates():
     assert t.cute_seconds == 3
     assert t.sleep_after_inactivity == 180.0
     assert t.blink_sequence == (("blink_closed", 0.12),)
+
+
+def test_emote_shows_frame_then_idle_and_no_blink():
+    b = brain(blink_interval=(3.0, 3.0))
+    assert b.emote("surprised", 2.0) == "surprised"
+    assert b.state == EMOTE and b.frame() == "surprised"
+    b.update(3.5)  # 眨眼时间到，但表情期间不眨眼
+    assert b.state == EMOTE
+    b.update(5.1)  # 默认 cute_seconds*1.5 = 3 s
+    assert b.state == IDLE and b.frame() == "idle"
+
+
+def test_emote_wakes_sleep_and_click_overrides_emote():
+    b = brain()
+    b.set_manual(SLEEP, 1.0)
+    assert b.emote("angry", 2.0) == EVENT_WAKE
+    assert b.frame() == "angry"
+    b.click(2.5)
+    assert b.state == CUTE

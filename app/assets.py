@@ -38,6 +38,8 @@ class PetSpec:
     canvas_px: Tuple[int, int] = (768, 896)
     anchor_px: Tuple[int, int] = (384, 848)
     placeholder: bool = True
+    # 额外表情：[(帧名, 菜单标签)]，可选；缺帧时回退 idle
+    extras: Tuple[Tuple[str, str], ...] = ()
 
     def frame_path(self, frame: str) -> Path:
         return self.frames_dir / f"{frame}.png"
@@ -80,6 +82,8 @@ def load_manifest(root: Optional[Path] = None) -> Manifest:
                 canvas_px=tuple(p.get("canvas_px", (768, 896))),  # type: ignore[arg-type]
                 anchor_px=tuple(p.get("anchor_px", (384, 848))),  # type: ignore[arg-type]
                 placeholder=bool(p.get("placeholder", True)),
+                extras=tuple((str(e["frame"]), str(e.get("label", e["frame"])))
+                             for e in p.get("extras", [])),
             ))
     except (KeyError, TypeError) as e:
         raise AssetError(f"角色清单格式错误：{path}（{e}）")

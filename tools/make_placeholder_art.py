@@ -1,4 +1,7 @@
-"""生成工程占位角色帧（程序绘制的矢量 Q 版 → 768×896 RGBA PNG）。
+"""生成托盘图标；可选生成 v0.2.0 的工程占位角色帧（程序绘制的矢量 Q 版）。
+
+默认只生成 assets/tray.png 与 tray.ico。角色帧自 v0.3.0 起来自概念图（extract_reference_sprites.py）。
+
 
 这些是**工程占位素材**：用于验证状态机、透明边缘、对齐与打包流程，
 画面细节达不到参考图水准，不能当作正式高清立绘交付。
@@ -451,14 +454,16 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, default=Path(__file__).resolve().parent.parent / "assets")
     ap.add_argument("--keep-svg", type=Path, help="同时把源 SVG 写到该目录（原始绘制文件）")
+    ap.add_argument("--frames-out", type=Path,
+                    help="把占位角色帧写到该目录（默认不生成：正式帧来自概念图，见 extract_reference_sprites.py）")
     args = ap.parse_args()
     os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
     from PySide6.QtGui import QGuiApplication
     _app = QGuiApplication.instance() or QGuiApplication([])
-    for pet in PALETTES:
+    for pet in PALETTES if args.frames_out else ():
         for frame in FRAMES:
             text = svg(pet, frame)
-            render_png(text, args.out / "pets" / pet / f"{frame}.png")
+            render_png(text, args.frames_out / pet / f"{frame}.png")
             if args.keep_svg:
                 d = args.keep_svg / pet
                 d.mkdir(parents=True, exist_ok=True)

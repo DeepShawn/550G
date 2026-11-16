@@ -98,3 +98,21 @@ def test_frames_same_canvas():
     for spec in m.pets:
         sizes = {Image.open(spec.frame_path(f)).size for f in REQUIRED_FRAMES}
         assert sizes == {tuple(spec.canvas_px)}
+
+
+def test_extras_declared_and_present():
+    m = load_manifest(ROOT)
+    for spec in m.pets:
+        assert len(spec.extras) >= 2
+        for frame, label in spec.extras:
+            assert spec.frame_path(frame).is_file(), frame
+            assert label
+    d = load_dialogues(ROOT / "dialogues.json")
+    assert d["550g"].lines["surprised"] and d["gpt_senpai"].lines["confused"]
+
+
+def test_frameset_loads_extras(qapp):
+    from app.frames import FrameSet
+    fs = FrameSet(load_manifest(ROOT).by_id("550g"))
+    assert fs.resolve("angry") == "angry"
+    assert not fs.problems
