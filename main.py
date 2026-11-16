@@ -150,6 +150,8 @@ def _smoke_checks(ctl, settings_path: Path) -> dict:
     checks["required_frames_present"] = all(not p.frames.missing_required() for p in pets)
     checks["no_asset_problems"] = not ctl.asset_problems
     a, b = pets
+    for p in pets:
+        p.emote_chance = 0.0  # 自检需要确定的结果
     pb = b.pos()
     a.trigger_click()
     checks["click_cute_and_bubble"] = a.brain.state == CUTE and bool(a.brain.bubble_text)

@@ -18,6 +18,8 @@ def ctl(qapp, tmp_path):
                       load_dialogues(root / "dialogues.json"), QIcon(str(root / "tray.png")),
                       force_no_tray=True)
     c.settings.first_run_hint_shown = True
+    for p in c.pets:
+        p.emote_chance = 0.0  # 让单击结果确定；额外表情另有测试
     c.start()
     yield c
     for p in c.pets:
@@ -152,3 +154,13 @@ def test_menu_emote(ctl):
     a.play_emote("surprised")
     assert a.brain.state == EMOTE and a.brain.frame() == "surprised" and a.brain.bubble_text
     assert b.brain.state != EMOTE
+
+
+def test_click_can_answer_with_extra_emote(ctl):
+    from app.state_machine import EMOTE
+    a = ctl.pets[0]
+    a.emote_chance = 1.0
+    a.trigger_click()
+    assert a.brain.state == EMOTE
+    assert a.brain.frame() in {f for f, _ in a.spec.extras}
+    assert a.brain.bubble_text

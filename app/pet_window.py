@@ -70,6 +70,7 @@ class PetWindow(QWidget):
         self._bubble_shift = 0
         self._dpr = 1.0
         self._screen_hooked = False
+        self.emote_chance = 0.25  # 单击时改用额外表情回应的概率（测试中可设为 0/1）
 
         self.setWindowTitle(spec.name)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
@@ -162,7 +163,7 @@ class PetWindow(QWidget):
     def trigger_click(self) -> None:
         now = monotonic()
         extras = [f for f, _ in self.spec.extras]
-        if self.brain.state != SLEEP and extras and random.random() < 0.25:
+        if self.brain.state != SLEEP and extras and random.random() < self.emote_chance:
             # 偶尔用额外表情回应单击，让反应更丰富
             frame = random.choice(extras)
             self.brain.emote(frame, now)
