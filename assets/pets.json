@@ -4,8 +4,8 @@
     {
       "id": "550g",
       "name": "550G",
-      "subtitle": "灰白发 · 蓝色主题",
-      "theme": "#648ED8",
+      "subtitle": "灰白发 · 蓝色主题 · 企鹅抱枕",
+      "theme": "#6A96EE",
       "frames_dir": "pets/550g",
       "canvas_px": [
         768,
@@ -16,23 +16,15 @@
         848
       ],
       "placeholder": false,
-      "source": "用户概念图 user_concept.png 表情贴纸抠图（Real-ESRGAN x4 放大）；眨眼帧由 idle 派生",
-      "extras": [
-        {
-          "frame": "surprised",
-          "label": "惊讶"
-        },
-        {
-          "frame": "angry",
-          "label": "生气"
-        }
-      ]
+      "source": "用户参考图 v2（user_concept_v2.png）中的角色本体抠图；其他表情由 idle 只改五官派生",
+      "extras": [],
+      "badge": "heart"
     },
     {
       "id": "gpt_senpai",
       "name": "前辈GPT",
-      "subtitle": "浅白绿渐变长发 · 白裙",
-      "theme": "#81AF88",
+      "subtitle": "浅绿长发 · 白裙 · 白花发饰",
+      "theme": "#7DB8A8",
       "frames_dir": "pets/gpt_senpai",
       "canvas_px": [
         768,
@@ -43,17 +35,9 @@
         848
       ],
       "placeholder": false,
-      "source": "用户概念图 user_concept.png 表情贴纸抠图（Real-ESRGAN x4 放大）；眨眼帧由 idle 派生",
-      "extras": [
-        {
-          "frame": "happy",
-          "label": "开心"
-        },
-        {
-          "frame": "confused",
-          "label": "疑惑"
-        }
-      ]
+      "source": "用户参考图 v2（user_concept_v2.png）中的角色本体抠图；其他表情由 idle 只改五官派生",
+      "extras": [],
+      "badge": "clover"
     }
   ],
   "animation": {

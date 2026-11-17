@@ -151,16 +151,20 @@ def test_bubble_fits_window_with_long_text(ctl):
 def test_menu_emote(ctl):
     from app.state_machine import EMOTE
     a, b = ctl.pets
-    a.play_emote("surprised")
-    assert a.brain.state == EMOTE and a.brain.frame() == "surprised" and a.brain.bubble_text
+    a.play_emote("cute")
+    assert a.brain.state == EMOTE and a.brain.frame() == "cute" and a.brain.bubble_text
     assert b.brain.state != EMOTE
 
 
 def test_click_can_answer_with_extra_emote(ctl):
     from app.state_machine import EMOTE
     a = ctl.pets[0]
+    a.spec.extras = (("cute", "卖萌"),)  # 当前素材没有额外表情，借用已有帧测试机制
     a.emote_chance = 1.0
-    a.trigger_click()
-    assert a.brain.state == EMOTE
-    assert a.brain.frame() in {f for f, _ in a.spec.extras}
-    assert a.brain.bubble_text
+    try:
+        a.trigger_click()
+        assert a.brain.state == EMOTE
+        assert a.brain.frame() == "cute"
+        assert a.brain.bubble_text
+    finally:
+        a.spec.extras = ()

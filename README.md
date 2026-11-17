@@ -1,6 +1,6 @@
 # 550G × 前辈GPT · Windows 双人桌宠
 
-v0.3.0-dev-preview —— 开发预览版（角色取自用户概念图；Windows 实机验收未完成，见 [docs/已知限制与测试记录.md](docs/已知限制与测试记录.md)）。
+v0.4.0-dev-preview —— 开发预览版（角色取自用户参考图 v2；Windows 实机验收未完成，见 [docs/已知限制与测试记录.md](docs/已知限制与测试记录.md)）。
 
 两位坐姿 Q 版角色常驻桌面：透明、置顶、各自独立拖动；单击对白并卖萌；随机眨眼、空闲睡觉、单击唤醒；右键与托盘可隐藏/显示/恢复/退出。PySide6 原生窗口，离线运行。
 
@@ -61,11 +61,12 @@ powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1 -Release # �
 
 ## 角色素材
 
-角色帧直接从概念图 `docs/handoff/resources/user_concept.png` 的表情贴纸中抠出（形象与概念图一致），见 [docs/素材来源.md](docs/素材来源.md)。重新生成：
+角色帧直接从参考图 `docs/handoff/resources/user_concept_v2.png` 中抠出（形象与参考图一致），见 [docs/素材来源.md](docs/素材来源.md)。重新生成：
 
 ```bash
-python tools/extract_reference_sprites.py --esrgan RealESRGAN_x4plus_anime_6B.pth   # 需要 torch、scipy
-python tools/make_blink_frames.py --dir assets/pets
+python tools/extract_characters.py --model isnet-anime.onnx    # 需要 numpy、scipy、onnxruntime
+python tools/make_expression_frames.py --dir assets/pets       # 眨眼/卖萌/睡觉
+python tools/make_tray_icon.py                                 # 托盘与 EXE 图标
 python tools/validate_assets.py --release --sheet preview.png
 ```
 

@@ -257,12 +257,13 @@ class PetWindow(QWidget):
     def bubble_rect(self) -> QRect:
         text = self.brain.bubble_text
         max_w = self.win_w - 8
-        pad_x, pad_y = round(10 * min(self.scale, 1.2)), round(6 * min(self.scale, 1.2))
+        pad_x, pad_y = round(14 * min(self.scale, 1.2)), round(7 * min(self.scale, 1.2))
         fm = QFontMetrics(self._bubble_font)
         fmn = QFontMetrics(self._name_font)
         text_rect = fm.boundingRect(QRect(0, 0, max_w - 2 * pad_x, 1000), Qt.TextWordWrap, text)
         lines_h = min(text_rect.height(), fm.lineSpacing() * 3)
-        w = max(text_rect.width(), fmn.horizontalAdvance(self.spec.name)) + 2 * pad_x
+        name_w = fmn.horizontalAdvance(self.spec.name) + (self._badge_size() * 1.5 if self.spec.badge else 0)
+        w = round(max(text_rect.width(), name_w)) + 2 * pad_x
         w = min(max_w, max(w, round(90 * self.scale)))
         h = fmn.lineSpacing() + lines_h + 2 * pad_y
         cx = self.char_origin.x() + self.char_w // 2
@@ -334,9 +335,38 @@ class PetWindow(QWidget):
             py = r.bottom() - r.height() * (0.15 + 0.6 * t) - 6 * i * self.scale
             p.drawText(QPointF(px, py), "Z" if i == 2 else "z")
 
+    def _badge_size(self) -> float:
+        return QFontMetrics(self._name_font).ascent() * 0.8
+
+    def _paint_badge(self, p: QPainter, x: float, cy: float) -> None:
+        """名字后面的小图标：heart（550G）/ clover（前辈GPT），用路径绘制，不依赖符号字体。"""
+        s = self._badge_size()
+        c = QColor(self.theme)
+        if self.spec.badge == "heart":
+            y0 = cy - s / 2
+
+            def pt(u, v):
+                return QPointF(x + u * s, y0 + v * s)
+            path = QPainterPath(pt(0.5, 0.3))
+            path.cubicTo(pt(0.5, 0.0), pt(0.0, 0.0), pt(0.0, 0.35))
+            path.cubicTo(pt(0.0, 0.6), pt(0.3, 0.75), pt(0.5, 0.95))
+            path.cubicTo(pt(0.7, 0.75), pt(1.0, 0.6), pt(1.0, 0.35))
+            path.cubicTo(pt(1.0, 0.0), pt(0.5, 0.0), pt(0.5, 0.3))
+            p.setPen(QPen(c, max(1.2, 1.6 * self.scale)))
+            p.setBrush(Qt.NoBrush)
+            p.drawPath(path)
+        elif self.spec.badge == "clover":
+            p.setPen(Qt.NoPen)
+            p.setBrush(c)
+            r = s * 0.28
+            ccx = x + s / 2
+            for dx, dy in ((0, -r), (-r, r * 0.25), (r, r * 0.25), (0, r * 0.9)):
+                p.drawEllipse(QPointF(ccx + dx, cy + dy - r * 0.2), r, r)
+
     def _paint_bubble(self, p: QPainter) -> None:
         r = QRectF(self.bubble_rect())
-        radius = 10 * min(self.scale, 1.2)
+        # 参考图风格：胶囊形白底、主题色描边
+        radius = min(r.height() / 2, 16 * min(self.scale, 1.2))
         path = QPainterPath()
         path.addRoundedRect(r, radius, radius)
         tail_x = min(max(r.left() + 18, self.char_origin.x() + self.char_w * 0.5), r.right() - 18)
@@ -346,20 +376,22 @@ class PetWindow(QWidget):
         tail.lineTo(tail_x + 7 * self.scale, r.bottom() - 1)
         tail.closeSubpath()
         path = path.united(tail)
-        border = QColor(self.theme)
-        border.setAlpha(170)
-        p.setPen(QPen(border, 1.5))
-        p.setBrush(QColor(255, 255, 255, 242))
+        border = QColor(self.theme).lighter(125)
+        p.setPen(QPen(border, max(1.5, 2.2 * min(self.scale, 1.2))))
+        p.setBrush(QColor(255, 255, 255, 245))
         p.drawPath(path)
 
-        pad_x = round(10 * min(self.scale, 1.2))
-        pad_y = round(6 * min(self.scale, 1.2))
+        pad_x = round(14 * min(self.scale, 1.2))
+        pad_y = round(7 * min(self.scale, 1.2))
         inner = r.adjusted(pad_x, pad_y, -pad_x, -pad_y)
         fmn = QFontMetrics(self._name_font)
         p.setFont(self._name_font)
         p.setPen(self.theme.darker(115))
         p.drawText(QRectF(inner.left(), inner.top(), inner.width(), fmn.lineSpacing()),
                    Qt.AlignLeft | Qt.AlignVCenter, self.spec.name)
+        if self.spec.badge:
+            bx = inner.left() + fmn.horizontalAdvance(self.spec.name) + self._badge_size() * 0.35
+            self._paint_badge(p, bx, inner.top() + fmn.lineSpacing() / 2)
         p.setFont(self._bubble_font)
         p.setPen(QColor(55, 62, 82))
         body = QRectF(inner.left(), inner.top() + fmn.lineSpacing(), inner.width(),

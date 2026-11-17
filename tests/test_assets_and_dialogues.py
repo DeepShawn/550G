@@ -100,19 +100,26 @@ def test_frames_same_canvas():
         assert sizes == {tuple(spec.canvas_px)}
 
 
-def test_extras_declared_and_present():
+def test_extras_optional_and_valid_if_declared():
     m = load_manifest(ROOT)
     for spec in m.pets:
-        assert len(spec.extras) >= 2
         for frame, label in spec.extras:
             assert spec.frame_path(frame).is_file(), frame
             assert label
-    d = load_dialogues(ROOT / "dialogues.json")
-    assert d["550g"].lines["surprised"] and d["gpt_senpai"].lines["confused"]
+        assert spec.badge in ("", "heart", "clover")
 
 
-def test_frameset_loads_extras(qapp):
+def test_frameset_loads_declared_extra(qapp, tmp_path):
+    import json as _json
     from app.frames import FrameSet
-    fs = FrameSet(load_manifest(ROOT).by_id("550g"))
-    assert fs.resolve("angry") == "angry"
+    root = make_asset_copy(tmp_path, [])
+    shutil.copy(root / "pets/550g/cute.png", root / "pets/550g/wave.png")
+    data = _json.loads((root / "pets.json").read_text(encoding="utf-8"))
+    data["pets"][0]["extras"] = [{"frame": "wave", "label": "挥手"}, {"frame": "missing", "label": "缺"}]
+    (root / "pets.json").write_text(_json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    spec = load_manifest(root).by_id("550g")
+    assert spec.extras == (("wave", "挥手"), ("missing", "缺"))
+    fs = FrameSet(spec)
+    assert fs.resolve("wave") == "wave"
+    assert fs.resolve("missing") == "idle"  # 额外表情缺帧回退，不算必需帧问题
     assert not fs.problems
